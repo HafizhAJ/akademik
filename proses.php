@@ -47,7 +47,36 @@ if (isset($_POST['update_prodi'])) {
 
 if (isset($_GET['hapus_prodi'])) {
     $id = $_GET['hapus_prodi'];
-    $koneksi->query("DELETE FROM prodi WHERE id = '$id'");
-    header("Location: index.php?page=dataprodi");
+    try {
+        $koneksi->query("DELETE FROM prodi WHERE id = '$id'");
+        header("Location: index.php?page=dataprodi");
+    } catch (Exception $e) {
+        echo "<script>alert('Gagal! Data prodi sedang digunakan mahasiswa.'); window.location.href='index.php?page=dataprodi';</script>";
+    }
+}
+
+if (isset($_POST['update_profile'])) {
+    session_start();
+    require 'koneksi.php';
+
+    $email = $_SESSION['email'];
+    $nama  = mysqli_real_escape_string($koneksi, trim($_POST['nama_lengkap']));
+
+    if (!empty($_POST['password_baru'])) {
+        $password = md5($_POST['password_baru']); 
+        $query = "UPDATE pengguna SET nama_lengkap='$nama', password='$password' WHERE email='$email'";
+    } else {
+        $query = "UPDATE pengguna SET nama_lengkap='$nama' WHERE email='$email'";
+    }
+
+    if ($koneksi->query($query)) {
+        $_SESSION['nama_lengkap'] = $nama; // Agar nama di pojok kanan navbar langsung berubah
+        $_SESSION['profile_success'] = "Profil berhasil diperbarui";
+    } else {
+        $_SESSION['profile_error'] = "Gagal memperbarui profil";
+    }
+
+    header("Location: index.php?page=profil");
+    exit;
 }
 ?>

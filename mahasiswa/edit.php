@@ -7,7 +7,7 @@ $d = $koneksi->query("SELECT * FROM mahasiswa WHERE nim = '$nim_get'")->fetch_as
     <h3>Edit Mahasiswa</h3>
     <input type="hidden" name="nim_lama" value="<?= $d['nim']; ?>">
     <div class="mb-3">
-        <label class="form-label">NIM (Bisa diubah)</label>
+        <label class="form-label">NIM</label>
         <input type="text" class="form-control" name="nim" value="<?= $d['nim']; ?>" required>
     </div>
     <div class="mb-3">
